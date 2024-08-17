@@ -47,55 +47,58 @@ public class General {
 	}
 
 	public static int validateQuestionID(Connection conn, int id, int pID, String msg) throws SQLException {
-		boolean isValid = false;
+	    boolean isValid = false;
 
-		while (!isValid) {
-			try {
-				String query = "SELECT COUNT(*) FROM Question WHERE QID = ?";
-				try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-					pstmt.setInt(1, id);
-					try (ResultSet rs = pstmt.executeQuery()) {
-						if (rs.next() && rs.getInt(1) > 0) {
-							isValid = true; // The ID is valid
-						} else {
-							System.out.println("No such Question ID. \n");
-							printDB(pID, conn);
-							System.out.println(msg);
-							id = promptForNewID();
-						}
-					}
-				}
-			} catch (InputMismatchException e) {
-				handleInputMismatch(msg);
-			}
-		}
-		return id;
+	    while (!isValid) {
+	        try {
+	            String query = "SELECT COUNT(*) FROM Question WHERE QID = ? AND PID = ?";
+	            try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+	                pstmt.setInt(1, id);
+	                pstmt.setInt(2, pID); // Ensure that QID also matches the correct PID
+	                try (ResultSet rs = pstmt.executeQuery()) {
+	                    if (rs.next() && rs.getInt(1) > 0) {
+	                        isValid = true; // The ID is valid
+	                    } else {
+	                        System.out.println("No such Question ID for the given Profession ID. \n");
+	                        printDB(pID, conn); // Use the correct PID to show related questions
+	                        System.out.println(msg);
+	                        id = promptForNewID();
+	                    }
+	                }
+	            }
+	        } catch (InputMismatchException e) {
+	            handleInputMismatch(msg);
+	        }
+	    }
+	    return id;
 	}
 
-	public static int validateAnswerID(Connection conn, int id, int qID, String msg) throws SQLException {
-		boolean isValid = false;
 
-		while (!isValid) {
-			try {
-				String query = "SELECT COUNT(*) FROM Answer WHERE AID = ?";
-				try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-					pstmt.setInt(1, id);
-					try (ResultSet rs = pstmt.executeQuery()) {
-						if (rs.next() && rs.getInt(1) > 0) {
-							isValid = true; // The ID is valid
-						} else {
-							System.out.println("No such Answer ID. \n");
-							Answer.showAnswers(qID, conn);
-							System.out.println(msg);
-							id = promptForNewID();
-						}
-					}
-				}
-			} catch (InputMismatchException e) {
-				handleInputMismatch(msg);
-			}
-		}
-		return id;
+	public static int validateAnswerID(Connection conn, int id, int qID, String msg) throws SQLException {
+	    boolean isValid = false;
+
+	    while (!isValid) {
+	        try {
+	            String query = "SELECT COUNT(*) FROM Answer WHERE AID = ? AND QID = ?";
+	            try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+	                pstmt.setInt(1, id);
+	                pstmt.setInt(2, qID); // Ensure that AID also matches the correct QID
+	                try (ResultSet rs = pstmt.executeQuery()) {
+	                    if (rs.next() && rs.getInt(1) > 0) {
+	                        isValid = true; // The ID is valid
+	                    } else {
+	                        System.out.println("No such Answer ID for the given Question ID. \n");
+	                        Answer.showAnswers(qID, conn); // Show answers related to the given QID
+	                        System.out.println(msg);
+	                        id = promptForNewID();
+	                    }
+	                }
+	            }
+	        } catch (InputMismatchException e) {
+	            handleInputMismatch(msg);
+	        }
+	    }
+	    return id;
 	}
 
 	private static int promptForNewID() {
