@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class Program {
 	public static Scanner scn = new Scanner(System.in);
-	final static String PASSWORD = "password";	
+	final static String PASSWORD = "nirbass1998";	
 
 	public static void databaseMenu(int pID, Connection conn, int uID)
 			throws FileNotFoundException, SQLException {
@@ -23,8 +23,8 @@ public class Program {
 		do {
 
 			System.out.println("\nPlease choose an option from the following:");
-			System.out.println("1. Show all the questions in the database");
-			System.out.println("2. Show all the answers of a question");
+			System.out.println("1. Show all the questions in the database.");
+			System.out.println("2. Show all the answers of a question.");
 			System.out.println("3. Add a new question to the database.");
 			System.out.println("4. Add a new answer to an existing question.");
 			System.out.println("5. Delete an answer from a question.");
@@ -32,7 +32,7 @@ public class Program {
 			System.out.println("7. Update a question.");
 			System.out.println("8. Update an answer.");
 			System.out.println("9. Generate a new exam.");
-			System.out.println("10. Show ID of the exams you created");
+			System.out.println("10.Show ID of the exams you created");
 			System.out.println("0. Return to the previous menu.");
 			choice = scn.nextInt();
 			// Clearing the input stream.
@@ -88,11 +88,11 @@ public class Program {
 	    int choice;
 	    do {
 	        System.out.println("Choose one of the following: ");
-	        System.out.println("1. Show all professions");
-	        System.out.println("2. Choose an existing profession");
-	        System.out.println("3. Add a new profession");
-	        System.out.println("4. Delete an existing profession");
-	        System.out.println("5. Logout");
+	        System.out.println("1. Show all professions.");
+	        System.out.println("2. Choose an existing profession.");
+	        System.out.println("3. Add a new profession.");
+	        System.out.println("4. Delete an existing profession.");
+	        System.out.println("5. Logout.");
 	        System.out.println("0. Exit the program.");
 	        choice = scn.nextInt();
 	        scn.nextLine(); // Clear the input stream

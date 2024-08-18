@@ -87,7 +87,7 @@ public class General {
 	                    if (rs.next() && rs.getInt(1) > 0) {
 	                        isValid = true; // The ID is valid
 	                    } else {
-	                        System.out.println("No such Answer ID for the given Question ID. \n");
+	                        System.out.println("No such Answer ID. \n");
 	                        Answer.showAnswers(qID, conn); // Show answers related to the given QID
 	                        System.out.println(msg);
 	                        id = promptForNewID();

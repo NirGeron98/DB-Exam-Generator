@@ -33,23 +33,23 @@ public class Answer {
     }
 	
 	public static void deleteAnswerFromDB(int aID, Connection conn) {
-		String deleteAnswer = "DELETE FROM answer WHERE aid = ?";
+	    String deleteAnswer = "DELETE FROM answer WHERE aid = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(deleteAnswer)) {
-            // Set the value for the placeholder
-            pstmt.setInt(1, aID);
+	    try (PreparedStatement pstmt = conn.prepareStatement(deleteAnswer)) {
+	        // Set the value for the placeholder
+	        pstmt.setInt(1, aID);
 
-            // Execute the delete statement
-            int numAffectedRows = pstmt.executeUpdate();
-            if (numAffectedRows > 0) {
-                System.out.println("Answer with ID " + aID + " deleted successfully.");
-            } else {
-                System.out.println("No answer found with ID " + aID);
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-        System.out.println();
+	        // Execute the delete statement
+	        int numAffectedRows = pstmt.executeUpdate();
+	        if (numAffectedRows > 0) {
+	            System.out.println("Answer with ID " + aID + " deleted successfully.");
+	        } else {
+	            System.out.println("No answer found with ID " + aID);
+	        }
+	    } catch (SQLException ex) {
+	        System.out.println(ex.getMessage());
+	    }
+	    System.out.println();
 	}
 	
 	public static void updateAnswer(int pID, Connection conn) throws SQLException {
@@ -79,7 +79,7 @@ public class Answer {
 	        // Execute the update
 	        int rowsAffected = pstmt.executeUpdate();
 	        if (rowsAffected > 0) {
-	            System.out.println("Answer updated successfully.\n");
+	            System.out.println("Answer updated successfully.");
 	        } else {
 	            System.out.println("Failed to update the answer. Answer ID may not exist.\n");
 	        }
@@ -167,15 +167,36 @@ public class Answer {
 	}
 	
 	public static void processDeleteAnswer(int pID, Connection conn) throws SQLException {
-		General.printDB(pID, conn);
+	    General.printDB(pID, conn);
 	    System.out.println("Enter the question's ID you want to delete an answer from: ");
 	    int qID = scn.nextInt();
 	    qID = General.validateQuestionID(conn, qID, pID, "Enter the question's ID you want to delete an answer from: ");
-	    System.out.println("Enter the answer's ID you want to delete: ");
 	    showAnswers(qID, conn);
+	    System.out.println("Enter the answer's ID you want to delete: ");
 	    int aID = scn.nextInt();
 	    aID = General.validateAnswerID(conn, aID, qID, "Enter the answer's ID you want to delete: ");
-	    deleteAnswerFromDB(aID, conn);
+
+	    // Check if this is the last answer for the question
+	    if (isLastAnswer(conn, qID)) {
+	        System.out.println("Cannot delete the answer because it is the last answer for this question.\nYou can update the answer.");
+	    } else {
+	        deleteAnswerFromDB(aID, conn);
+	    }
+	}
+	
+	public static boolean isLastAnswer(Connection conn, int qID) throws SQLException {
+	    String countAnswersQuery = "SELECT COUNT(*) FROM answer WHERE qid = ?";
+	    try (PreparedStatement pstmt = conn.prepareStatement(countAnswersQuery)) {
+	        pstmt.setInt(1, qID);
+	        ResultSet rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            int count = rs.getInt(1);
+	            return count <= 1; // Return true if there is only one answer left
+	        }
+	    } catch (SQLException ex) {
+	        System.out.println("SQL Error: " + ex.getMessage());
+	    }
+	    return false; // Default to false if there's an issue
 	}
 	
 	public static void showAnswersOfQuestion(int pID, Connection conn) throws SQLException {
