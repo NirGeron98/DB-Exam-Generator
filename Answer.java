@@ -184,10 +184,56 @@ public class Answer {
 	    // Check if this is the last answer for the question
 	    if (isLastAnswer(conn, qID)) {
 	        System.out.println("Cannot delete the answer because it is the last answer for this question.\nYou can update the answer.");
+	    } else if (isOnlyCorrectAnswer(conn, qID, aID)) {
+	        System.out.println("Cannot delete the answer because it is the only correct answer for this question.\nYou can update the answer.");
+	    } else if (isBelowTwoAnswers(conn, qID)) {
+	        System.out.println("Cannot delete the answer because a closed question must have at least two answers.\n");
 	    } else {
 	        deleteAnswerFromDB(aID, conn);
 	    }
 	}
+
+	public static boolean isOnlyCorrectAnswer(Connection conn, int qID, int aID) throws SQLException {
+	    String countCorrectAnswersQuery = "SELECT COUNT(*) FROM answer WHERE qid = ? AND isCorrect = TRUE";
+	    try (PreparedStatement pstmt = conn.prepareStatement(countCorrectAnswersQuery)) {
+	        pstmt.setInt(1, qID);
+	        ResultSet rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            int count = rs.getInt(1);
+	            if (count == 1) {
+	                // Check if the only correct answer is the one being deleted
+	                String checkIfDeletingCorrect = "SELECT isCorrect FROM answer WHERE aid = ?";
+	                try (PreparedStatement pstmt2 = conn.prepareStatement(checkIfDeletingCorrect)) {
+	                    pstmt2.setInt(1, aID);
+	                    ResultSet rs2 = pstmt2.executeQuery();
+	                    if (rs2.next()) {
+	                        return rs2.getBoolean("isCorrect"); // Return true if the answer being deleted is the correct one
+	                    }
+	                }
+	            }
+	        }
+	    } catch (SQLException ex) {
+	        System.out.println("SQL Error: " + ex.getMessage());
+	    }
+	    return false; // Default to false if there's an issue
+	}
+
+	public static boolean isBelowTwoAnswers(Connection conn, int qID) throws SQLException {
+	    String countAnswersQuery = "SELECT COUNT(*) FROM answer WHERE qid = ?";
+	    try (PreparedStatement pstmt = conn.prepareStatement(countAnswersQuery)) {
+	        pstmt.setInt(1, qID);
+	        ResultSet rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            int count = rs.getInt(1);
+	            return count <= 2; // Return true if there are less than or equal to two answers left
+	        }
+	    } catch (SQLException ex) {
+	        System.out.println("SQL Error: " + ex.getMessage());
+	    }
+	    return false; // Default to false if there's an issue
+	}
+
+
 	
 	public static boolean isLastAnswer(Connection conn, int qID) throws SQLException {
 	    String countAnswersQuery = "SELECT COUNT(*) FROM answer WHERE qid = ?";
