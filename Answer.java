@@ -151,11 +151,16 @@ public class Answer {
 	        System.out.println();
 	        return;
 	    }
-
+	    
+	    scn.nextLine();
+	    
 	    System.out.println("Enter answer: ");
-	    String answerString = scn.next();
+	    String answerString = scn.nextLine();
+	    
 	    System.out.println("Is it a correct answer?\nPlease enter yes or no: ");
-	    String isRight = scn.next();		 // Clear buffer
+	    String isRight = scn.next();	
+	    scn.nextLine();
+	    
 	   
 	    while (!isRight.equals("yes") && !isRight.equals("no")) {			// Assuring the input is valid
 	        System.out.println("Invalid input, please try again: ");

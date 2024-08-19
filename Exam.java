@@ -177,7 +177,7 @@ public class Exam {
 
                         System.out.println("The question has been added to the exam");
                     } else {	
-                        System.out.println("Invalid QID. Please enter a valid Question ID from the list above.");
+                        System.out.println("Invalid ID. Please enter a valid Question ID from the list above.");
                     }
                 }
             }

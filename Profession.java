@@ -15,7 +15,7 @@ public class Profession {
         showProfessions(stmt);
         System.out.println(msg);
         int pID = scn.nextInt();
-        //scn.nextLine(); 
+        scn.nextLine(); 
 
         // Validate the entered ID
         pID = General.validateProfessionID(conn, pID, msg);
@@ -35,7 +35,7 @@ public class Profession {
             }
         }
         else
-            System.out.println("there are no professions");
+            System.out.println("There are no professions.");
 
 
         System.out.println();
