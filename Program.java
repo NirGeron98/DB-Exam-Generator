@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class Program {
 	public static Scanner scn = new Scanner(System.in);
-	final static String PASSWORD = "nirbass1998";	
+	final static String PASSWORD = "password";	
 
 	public static void databaseMenu(int pID, Connection conn, int uID)
 			throws FileNotFoundException, SQLException {
